@@ -1,0 +1,193 @@
+#include"stdio.h"
+#include"string.h"
+#include"stdlib.h"
+int cx();
+int qk();
+int tc();
+int zjm();
+int mima();
+int zz();
+int s1;
+struct Account
+{
+	char zh[100];
+	char mm[100];
+	float money;
+}s[5];
+
+int dl()
+{
+	char mm1[100];
+	char zh1[100];
+	int i=1,k,m=1;
+	printf("请输入账号和密码:\n");
+	for(k=0;k<3;k++)
+    {
+	  gets(zh1);
+      gets(mm1);
+    for(i=0;i<5;i++)
+     {  
+	   if(strcmp(s[i].zh,zh1)==0)
+        if(strcmp(s[i].mm,mm1)==0)
+       {
+	    printf("登陆成功\n");
+	    s1=i;
+        zjm();
+        return 0;
+       }
+     }
+    printf("第%d次输入账号密码有误(3次机会)\n",k+1);
+    }
+    if(k==3)
+	 printf("账号密码错误,退出登录\n");
+    return 0;
+}
+
+int zjm()
+{
+	int i,x;
+	printf("输入1查询余额，输入2取款，输入3退出，输入4修改密码，输入5转账:");
+	do
+	{
+	scanf("%d",&x); 
+	switch(x)
+	{
+		case 1: cx();return 0;
+		case 2: qk();return 0;
+		case 3: tc();return 0;
+		case 4: mima();return 0;
+		case 5: zz();return 0;
+	}
+	if(x<0||x>4)
+	printf("输入有误，重新输入\n");
+    }while(1);
+    return 0;
+}
+
+int mima()
+{
+	FILE *a;
+	a=fopen("a.txt","r");
+	int i;
+	printf("请输入新的密码:");
+	scanf("%s",s[s1].mm);
+	for(i=0;i<5;i++)
+	 fprintf(a,"%s %s %f\n",s[i].mm,s[i].zh,s[i].money);
+	printf("修改成功，请重新登录\n");
+	dl();
+	return 0;
+}
+
+int cx()
+{
+	int i,x;
+	printf("剩余金额%f元",s[s1].money);
+	printf("\n输入1返回，输入2退出: ");
+	do
+	{
+	scanf("%d",&x);
+	switch(x)
+	{
+		case 1: zjm();return 0;
+		case 2: tc();return 0;
+	}
+	 printf("输入有误,重新输入\n");
+    }while(1);
+    return 0;
+}
+
+int qk()
+{
+	int x,i;
+	printf("请输入取款金额:\n ");
+	 scanf("%d",&x);
+	if(x>s[s1].money)
+	  printf("余额不足\n");
+	else
+	{
+	  printf("\n输入1返回，输入2退出: ");
+	  do
+	  {
+	   scanf("%d",&x);
+	   switch(x)
+	     {
+		  case 1: zjm();return 0;
+	      case 2: tc();return 0;
+	     }
+	     printf("输入有误，请重新输入\n");
+      }while(1);
+    }
+    s[s1].money-=x;
+    printf("输入1返回，输入2退出: ");
+    while(1)
+	{ 
+	scanf("%d",&x);
+	switch(x)
+	 {
+		case 1: zjm();return 0;
+		case 2: tc();return 0;
+	 }
+	printf("输入有误,请重新输入\n");
+    }
+	return 0;
+}
+
+int tc()
+{
+	FILE *a;
+	a=fopen("a.txt","w");
+	int i;
+	for(i=0;i<5;i++)
+	 fprintf(a,"%s %s %f\n",s[i].mm,s[i].zh,s[i].money);
+	return 0;
+}
+
+int zz()
+{
+	int i,j;
+	float je;
+	char zh[100];
+	printf("请输入转账账号:");
+	do
+    {
+	 scanf("%s",zh);
+     for(j=0;j<5;j++)
+      {  
+	   if(strcmp(s[j].zh,zh)==0)
+         break;
+      }
+      if(j==5)
+       printf("\n账号不存在请重新输入\n");
+      else
+       break;
+    }while(1);
+    printf("输入转账金额:");
+    scanf("%f",&je);
+    s[s1].money-=je;
+    s[j].money+=je;
+    printf("输入1返回，输入2退出: ");
+    while(1)
+	{ 
+	scanf("%d",&i);
+	switch(i)
+	 {
+		case 1: zjm();return 0;
+		case 2: tc();return 0;
+	 }
+	printf("输入有误,请重新输入\n");
+    }	
+}
+
+main()
+{
+	int i;
+	FILE *a;
+	a=fopen("a.txt","r");
+	for(i=0;i<5;i++)
+	   fscanf(a,"%s %s %f\n",s[i].zh,s[i].mm,&s[i].money);
+	for(i=0;i<5;i++)
+	   printf("%s %s %f\n",s[i].zh,s[i].mm,s[i].money);
+	dl();
+	fclose(a);
+	return 0;
+}
